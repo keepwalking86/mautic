@@ -1,0 +1,32 @@
+version: "3"
+services:
+  # Web
+  nginx:
+    build: ./docker/nginx
+    volumes:
+    - ./source:/var/www/mautic
+    - ./logs:/var/log/nginx
+    ports:
+      - "8096:80"
+    depends_on:
+      - php
+
+  # PHP service
+  php:
+    build: ./docker/php
+    volumes:
+      - ./source:/var/www/mautic
+    depends_on:
+      - mysql
+  mysql:
+    build: ./docker/mysql
+    environment:
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Ho_Chi_Minh
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - "3307:3306"
